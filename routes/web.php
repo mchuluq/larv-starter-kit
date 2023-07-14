@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +18,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes([
+    'verify' => true,
+    'register' => true,
+]);
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/user',[App\Http\Controllers\Auth\UserController::class,'index'])->name('user.index');
+Route::post('/user/update',[App\Http\Controllers\Auth\UserController::class,'update'])->name('user.update');
+Route::post('/user/password',[App\Http\Controllers\Auth\UserController::class,'password'])->name('user.password');

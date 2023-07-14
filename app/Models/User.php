@@ -2,44 +2,71 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
+
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
-{
-    use HasApiTokens, HasFactory, Notifiable;
+use ParagonIE\CipherSweet\BlindIndex;
+use ParagonIE\CipherSweet\EncryptedRow;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+use Spatie\LaravelCipherSweet\Concerns\UsesCipherSweet;
+use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
+
+class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEmail{
+    
+    use HasApiTokens, HasFactory, Notifiable, UsesCipherSweet;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function boot(){
+        parent::boot();
+        static::creating(function ($model) {
+            if (!$model->getKey()) {
+                $model->{$model->getKeyName()} = (string) Str::uuid();
+            }
+        });
+    }
+
+    public static function configureCipherSweet(EncryptedRow $encryptedRow): void{
+        $encryptedRow->addField('email')->addBlindIndex('email',new BlindIndex('email_index'));
+    }
+
+    public function getAuthIdentifierName(){
+        return 'name';
+    }
+
+    // automatic hash password string
+    public function setPasswordAttribute($string=null){
+        if(!empty($string)){
+            $info = password_get_info($string);
+            if($info['algo'] == 0){
+                $this->attributes['password'] = \Illuminate\Support\Facades\Hash::make($string);
+            }else{
+                $this->attributes['password'] = $string;
+            }
+        }else{
+            unset($this->attributes['password']);
+        }
+    }
 }
