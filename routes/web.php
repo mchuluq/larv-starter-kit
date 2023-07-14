@@ -28,3 +28,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/user',[App\Http\Controllers\Auth\UserController::class,'index'])->name('user.index');
 Route::post('/user/update',[App\Http\Controllers\Auth\UserController::class,'update'])->name('user.update');
 Route::post('/user/password',[App\Http\Controllers\Auth\UserController::class,'password'])->name('user.password');
+Route::match(['post','delete'],'/user/otp',[App\Http\Controllers\Auth\UserController::class,'otp'])->name('user.otp');
+
+Route::post('/2fa', function () {
+    return redirect(URL()->previous());
+})->name('2fa')->middleware('otp');

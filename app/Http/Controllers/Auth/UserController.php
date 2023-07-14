@@ -5,19 +5,32 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
-
+use App\Rules\Otp;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
 use Image;
+use stdClass;
 
 class UserController extends Controller{
 
     public function __construct(){
-        $this->middleware(['auth','verified']);
+        $this->middleware(['auth','verified','otp']);
     }
 
     public function index(Request $req){
-        $data['user'] = $req->user();
+        $google2fa = app('pragmarx.google2fa');
+        $user = $req->user();
+
+        $otp = new stdClass();
+        $otp->status = $user->otp_status;
+        $otp->otp_secret = ($user->otp_status) ? null : $google2fa->generateSecretKey();
+        $otp->qr_image = ($user->otp_status) ? null : "data:image/svg+xml;base64,".base64_encode($google2fa->getQRCodeInline(
+            config('app.name'),$user->email,$otp->otp_secret
+        ));
+
+        $data['user'] = $user;
+        $data['otp'] = $otp;
+
         return view('auth.user',$data);
     }
 
@@ -61,5 +74,31 @@ class UserController extends Controller{
         $user->save();
 
         return back()->with('password_status', 'password-updated');
+    }
+
+    public function otp(Request $req){
+        $user = $req->user();
+        if($req->isMethod('post')){
+            $req->validate(array(
+                'otp_secret' => 'required|string',
+            ));
+            $input = $req->only(['otp_secret']);
+            $user->otp_secret = $input['otp_secret'];
+        
+            $user->save();
+
+            return back()->with('register_otp_status', 'otp-registered');
+        }elseif($req->isMethod('delete')){
+            $req->validate(array(
+                'otp_code' => ['required',new Otp],
+                'password' => 'required|current_password',
+            ));
+            $input = $req->only(['otp_secret']);
+            $user->otp_secret = null;
+        
+            $user->save();
+
+            return back()->with('register_otp_status', 'otp-unregistered');
+        }
     }
 }

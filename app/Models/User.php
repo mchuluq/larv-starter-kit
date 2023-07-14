@@ -27,18 +27,23 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
         'name',
         'email',
         'password',
-        'photo_url'
+        'photo_url',
+        'otp_secret'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'otp_secret'
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'otp_secret' => 'encrypted'
     ];
+
+    protected $appends = ['otp_status'];
 
     protected static function boot(){
         parent::boot();
@@ -69,6 +74,10 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
         }else{
             unset($this->attributes['password']);
         }
+    }
+
+    public function getOtpStatusAttribute(){
+        return !!$this->otp_secret;
     }
 
     public function getPhotoUrlAttribute(){

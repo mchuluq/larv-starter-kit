@@ -1,6 +1,6 @@
 <div id="panel-user-update">
 <form class="card" method="POST" action="{{ route('user.update') }}" id="form-user-update" enctype="multipart/form-data">
-    <div class="card-header">{{ __('Profil') }}</div>
+    <div class="card-header">{{ __('Profile') }}</div>
     <div class="card-body">
         @csrf
         @if (session('update_status'))
