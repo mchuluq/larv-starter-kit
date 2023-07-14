@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
+use Image;
 
 class UserController extends Controller{
 
@@ -27,13 +28,23 @@ class UserController extends Controller{
                 if(\App\Models\User::whereBlind('email','email_index',$value)->where('id','<>',$user->id)->count() > 0){
                     $fail("email tidak dapat digunakan");
                 };
-            }]
+            }],
+            'photo_url' => ['nullable','image','mimes:jpg,bmp,png','max:1024'],
         ]);
 
-        $user = $req->user();
         $user->email = $validated['email'];
-        $user->save();
         
+        if($req->hasFile('photo_url')){
+            $photo = $req->file('photo_url');
+            $filename = sha1($user->id).'.'.$photo->getClientOriginalExtension();
+            Image::make($photo)->resize(300,300,function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save(storage_path('app/public/uploads/avatar/'.$filename));
+            $user->photo_url = $filename;
+        }
+        
+        $user->save();
         return back()->with('update_status', 'user-updated');
     }
 
