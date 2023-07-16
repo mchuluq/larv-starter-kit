@@ -60,9 +60,14 @@ return [
     */
 
     'providers' => [
+        // 'users' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\User::class,
+        // ],
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'eloquent-webauthn',
             'model' => App\Models\User::class,
+            'password_fallback' => true,
         ],
 
         // 'users' => [
@@ -111,5 +116,11 @@ return [
     */
 
     'password_timeout' => 10800,
+
+
+    // custom webauthn config
+
+    'webauthn_remember_cookie' => 'webauthn_remember',
+    'webauthn_remember_expire' => 31556952,
 
 ];

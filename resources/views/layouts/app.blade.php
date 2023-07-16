@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="{{env('APP_URL')}}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -19,6 +20,8 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script src="{{ Vite::asset('resources/js/vendor/webauthn/webauthn.js') }}"></script>
 </head>
 <body>
     <div id="app">

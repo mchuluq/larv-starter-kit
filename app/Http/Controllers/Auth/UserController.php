@@ -20,17 +20,14 @@ class UserController extends Controller{
     public function index(Request $req){
         $google2fa = app('pragmarx.google2fa');
         $user = $req->user();
-
         $otp = new stdClass();
         $otp->status = $user->otp_status;
         $otp->otp_secret = ($user->otp_status) ? null : $google2fa->generateSecretKey();
         $otp->qr_image = ($user->otp_status) ? null : "data:image/svg+xml;base64,".base64_encode($google2fa->getQRCodeInline(
             config('app.name'),$user->email,$otp->otp_secret
         ));
-
         $data['user'] = $user;
         $data['otp'] = $otp;
-
         return view('auth.user',$data);
     }
 
@@ -44,9 +41,7 @@ class UserController extends Controller{
             }],
             'photo_url' => ['nullable','image','mimes:jpg,bmp,png','max:1024'],
         ]);
-
         $user->email = $validated['email'];
-        
         if($req->hasFile('photo_url')){
             $photo = $req->file('photo_url');
             $filename = sha1($user->id).'.'.$photo->getClientOriginalExtension();
@@ -56,7 +51,6 @@ class UserController extends Controller{
             })->save(storage_path('app/public/uploads/avatar/'.$filename));
             $user->photo_url = $filename;
         }
-        
         $user->save();
         return back()->with('update_status', 'user-updated');
     }
@@ -72,7 +66,6 @@ class UserController extends Controller{
         $user->name = $validated['name'];
         $user->password = $validated['password'];
         $user->save();
-
         return back()->with('password_status', 'password-updated');
     }
 
@@ -81,12 +74,11 @@ class UserController extends Controller{
         if($req->isMethod('post')){
             $req->validate(array(
                 'otp_secret' => 'required|string',
+                'password' => 'required|current_password'
             ));
             $input = $req->only(['otp_secret']);
             $user->otp_secret = $input['otp_secret'];
-        
             $user->save();
-
             return back()->with('register_otp_status', 'otp-registered');
         }elseif($req->isMethod('delete')){
             $req->validate(array(
@@ -95,10 +87,22 @@ class UserController extends Controller{
             ));
             $input = $req->only(['otp_secret']);
             $user->otp_secret = null;
-        
             $user->save();
-
             return back()->with('register_otp_status', 'otp-unregistered');
+        }
+    }
+
+    public function webauthn(Request $req,$id=null){
+        $user = $req->user();
+        if($req->isMethod('delete')){
+            $user->credentials()->where('id','=',$id)->delete();
+            return $this->message([
+                'message' => __('auth.credential_deleted'),
+                'title' => 'webauthn'
+            ]);
+        }else{
+            $data['credentials'] = $user->credentials()->get();
+            return response()->json($data);
         }
     }
 }

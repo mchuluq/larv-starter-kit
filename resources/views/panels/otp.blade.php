@@ -46,6 +46,16 @@
             <div class="mb-3">
                 <input type="text" name="otp_secret" class="form-control" value="{{$otp->otp_secret}}" readonly>
             </div>
+            <div class="mb-3">
+                <div class="input-group" id="input-otp-password-group">
+                    <div class="form-floating mb-3">
+                        <input id="otp-password" type="password" class="form-control rounded @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="current password">
+                        <label for="otp-password">password</label>
+                        @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                    </div>
+                    <button type="button" class="d-none toggle-password" aria-label="Show password as plain text. Warning: this will display your password on the screen."></button>
+                </div>
+            </div>
         </div>
         <div class="card-footer text-end">
             <button type="submit" class="btn btn-primary">{{ __('Set OTP') }}</button>

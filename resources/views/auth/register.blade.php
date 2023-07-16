@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title','register')
+@section('title','Register')
 
 @section('content')
 <div class="container" id="app-register-page">

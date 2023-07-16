@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','user')
+@section('title','User')
 
 @section('content')
 <div class="container">
@@ -13,6 +13,9 @@
         </div>
         <div class="col-md-6 mb-3">
             @include('panels.otp')
+        </div>
+        <div class="col-md-6 mb-3">
+            @include('panels.webauthn')
         </div>
     </div>
 </div>

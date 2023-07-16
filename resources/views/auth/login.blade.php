@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title','login')
+@section('title','Login')
 
 @section('content')
 <div class="container" id="app-login-page">
@@ -16,8 +16,11 @@
                     </a>
                 </div>
                 <div class="mb-3">
+                    <div v-if="message" class="alert" :class="{'alert-success':!error,'alert-danger':error}">@{{message}}</div>
+                </div>
+                <div class="mb-3">
                     <div class="form-floating">
-                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" placeholder="username" autofocus>
+                        <input id="name" v-model="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" placeholder="username" autofocus>
                         <label for="name">username</label>
                         @error('name')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                     </div>
@@ -25,7 +28,7 @@
                 <div class="mb-3">
                     <div class="input-group" id="input-password-group">
                         <div class="form-floating mb-3">
-                            <input id="password" type="password" class="form-control rounded @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="password">
+                            <input id="password" v-model="password" type="password" class="form-control rounded @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="password">
                             <label for="password">password</label>
                             @error('password')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
                         </div>
@@ -35,7 +38,7 @@
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <input class="form-check-input" v-model="remember" type="checkbox" name="remember" id="remember">
                             <label class="form-check-label" for="remember">{{ __('Remember Me') }}</label>
                         </div>
                     </div>
@@ -45,9 +48,14 @@
                         @endif
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mb-3">
                     <div class="col-md-12 d-grid gap-2">
                         <button type="submit" class="btn btn-primary">{{ __('Login') }}</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-secondary" @click="webauthnLogin">{{ __('Webauthn') }}</button>
                     </div>
                 </div>
             </form>
@@ -58,10 +66,41 @@
     const { createApp, ref } = Vue
     createApp({
         data(){
-            return {}
+            return {
+                name : null,
+                password : null,
+                remember : false,
+
+                redirect_url : '{{$redirect_url}}',
+                webauthn : {{$webauthn}},
+                
+                message : null,
+                error : false
+            }
         },
         mounted(){
             window.passwordToggle.init('input-password-group');
+            if(this.webauthn){
+                this.remember = true;
+                this.webauthnLogin();
+            }
+        },
+        methods : {
+            webauthnLogin(){
+                var self = this;
+                new WebAuthn().login({
+                    name : self.name
+                }, {
+                    remember: document.getElementById('remember').checked ? 'on' : null, 
+                }).then(response => {
+                    self.message = 'Authentication successful!'
+                    self.error = false;
+                    window.location.href = self.redirect_url;
+                }).catch(error => {
+                    self.message = 'Something went wrong, try again!'
+                    self.error = true;
+                })
+            }
         }
     }).mount('#app-login-page')    
 </script>

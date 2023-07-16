@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
-
+use Laragear\WebAuthn\Contracts\WebAuthnAuthenticatable;
+use Laragear\WebAuthn\WebAuthnAuthentication;
 use Laravel\Sanctum\HasApiTokens;
 
 use ParagonIE\CipherSweet\BlindIndex;
@@ -16,9 +17,11 @@ use ParagonIE\CipherSweet\EncryptedRow;
 use Spatie\LaravelCipherSweet\Concerns\UsesCipherSweet;
 use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 
-class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEmail{
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
+class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEmail, WebAuthnAuthenticatable {
     
-    use HasApiTokens, HasFactory, Notifiable, UsesCipherSweet;
+    use HasApiTokens, HasFactory, Notifiable, UsesCipherSweet, WebAuthnAuthentication;
 
     public $incrementing = false;
     protected $keyType = 'string';
@@ -101,4 +104,8 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
 		}
 		return $url;
 	}
+
+    public function credentials(): MorphMany{
+        return $this->morphMany(WebAuthnCredential::class, 'authenticatable');
+    }
 }

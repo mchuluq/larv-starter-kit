@@ -42,4 +42,10 @@ class LoginController extends Controller
     {
         return 'name';
     }
+
+    public function showLoginForm(){
+        $data['webauthn'] = (int) (request()->hasCookie(config('auth.webauthn_remember_cookie')));
+        $data['redirect_url'] = route('home');
+        return view('auth.login',$data);
+    }
 }
