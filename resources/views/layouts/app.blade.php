@@ -17,7 +17,7 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js','resources/js/customs/theme-switcher.js'])
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
@@ -25,7 +25,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-primary shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark text-bg-primary shadow-sm">
             <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -70,6 +70,22 @@
                                 </div>
                             </li>
                         @endguest
+                        <li class="nav-item dropdown">
+                            <button class="btn btn-link nav-link dropdown-toggle" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (auto)">
+                                <span class="theme-icon-active"><i></i></span> <span class="d-lg-none ms-2" id="bd-theme-text">Toggle theme</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+                                <li>
+                                    <button type="button" class="dropdown-item" data-bs-theme-value="light" aria-pressed="false"><i class="fa-solid fa-sun fa-fw me-1"></i>Light</button>
+                                </li>
+                                <li>
+                                    <button type="button" class="dropdown-item" data-bs-theme-value="dark" aria-pressed="false"><i class="fa-solid fa-moon fa-fw me-1"></i>Dark</button>
+                                </li>
+                                <li>
+                                    <button type="button" class="dropdown-item" data-bs-theme-value="auto" aria-pressed="true"><i class="fa-solid fa-circle-half-stroke fa-fw me-1"></i>Auto</button>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
