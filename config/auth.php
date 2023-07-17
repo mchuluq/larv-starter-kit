@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+        ],
     ],
 
     /*
@@ -60,20 +64,11 @@ return [
     */
 
     'providers' => [
-        // 'users' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Models\User::class,
-        // ],
         'users' => [
             'driver' => 'eloquent-webauthn',
             'model' => App\Models\User::class,
             'password_fallback' => true,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -121,6 +116,6 @@ return [
     // custom webauthn config
 
     'webauthn_remember_cookie' => 'webauthn_remember',
-    'webauthn_remember_expire' => 31556952,
+    'webauthn_remember_expire' => 31556952, // 1 tahun
 
 ];
