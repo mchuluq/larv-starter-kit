@@ -4,10 +4,10 @@
         <div class="list-group list-group-flush" v-if="lists.length > 0">
             <div class="list-group-item" v-for="(cred,i) in lists" :key="i">
                 <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-0 fw-bold">@{{implode_string([cred.user_device.device,cred.user_device.brand,cred.user_device.model])}}</h5>
-                  <button class="btn btn-sm btn-link" type="button" @click="deleteCredential(cred)">delete</button>
+                  <span class="mb-0 fw-bold">@{{implode_string([cred.user_device.device,cred.user_device.brand,cred.user_device.model])}}</span>
+                  <button class="btn btn-link btn-sm px-1 py-0" type="button" @click="deleteCredential(cred)"><i class="fa-solid fa-trash"></i></button>
                 </div>
-                <p class="mb-0">@{{implode_string([cred.alias,cred.user_device.os,cred.user_device.client])}}</p>
+                <span class="mb-0 d-block">@{{implode_string([cred.alias,cred.user_device.os,cred.user_device.client])}}</span>
                 <small>@{{format_time(cred.updated_at)}}</small>
             </div>
         </div>
