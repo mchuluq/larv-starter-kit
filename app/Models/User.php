@@ -61,10 +61,6 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
         $encryptedRow->addField('email')->addBlindIndex('email',new BlindIndex('email_index'));
     }
 
-    public function getAuthIdentifierName(){
-        return 'name';
-    }
-
     // automatic hash password string
     public function setPasswordAttribute($string=null){
         if(!empty($string)){
