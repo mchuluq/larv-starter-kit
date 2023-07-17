@@ -59,4 +59,10 @@ return [
         'secret' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET'),
     ],
 
+    'scope_list' => [
+        'identity' => 'Basic identity (ID, name, email, photo)',
+        'user-setting' => 'Change user setting',
+        'route-permission' => 'Main access permission',
+    ],
+
 ];

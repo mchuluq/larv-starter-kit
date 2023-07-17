@@ -22,13 +22,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Passport::tokensCan([
-            'identity' => 'Basic identity (ID, name, email, photo)',
-            'user-setting' => 'Change user setting',
-            'route-permission' => 'Main access permission',
-        ]);
-
-        Passport::setDefaultScope(['identity']);
-    
+        Passport::tokensCan(config('passport.scope_list'));    
     }
 }

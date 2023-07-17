@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:api','scopes:identity'])->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Route::middleware(['client:identity'])->get('/test', function (Request $request) {
+//     return [now()->format('Y-m-d H:i:s')];
+// });

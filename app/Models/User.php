@@ -104,4 +104,8 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
     public function credentials(): MorphMany{
         return $this->morphMany(WebAuthnCredential::class, 'authenticatable');
     }
+
+    public function findForPassport($username){
+        return $this->where('name',$username)->first();
+    }
 }
