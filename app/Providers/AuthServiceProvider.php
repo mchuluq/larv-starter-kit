@@ -5,6 +5,7 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Route;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,11 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Passport::tokensCan(config('passport.scope_list'));    
+        Passport::tokensCan(config('passport.scope_list'));
+        Passport::setDefaultScope(config('passport.default_scope')); 
+
+        Route::group(['as' => 'passport.','prefix' => config('passport.path', 'oauth'),'namespace' => 'Laravel\Passport\Http\Controllers'], function () {
+            $this->loadRoutesFrom(__DIR__.'/../../routes/oauth.php');
+        });
     }
 }

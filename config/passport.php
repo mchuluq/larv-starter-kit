@@ -59,10 +59,17 @@ return [
         'secret' => env('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET'),
     ],
 
+    
+    // custom config
     'scope_list' => [
         'identity' => 'Basic identity (ID, name, email, photo)',
         'user-setting' => 'Change user setting',
         'route-permission' => 'Main access permission',
     ],
+    'default_scope' => ['identity'],
+
+    'client_routes' => false,
+
+    'personal_access_token_routes' => false,
 
 ];
