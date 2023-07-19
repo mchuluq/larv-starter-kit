@@ -105,8 +105,6 @@ const toastr = {
             elem.appendChild(flex)
         }
         this.build_container(options);
-
-        console.log(container_id);
         container = document.getElementById(container_id)
         container.appendChild(elem);
 

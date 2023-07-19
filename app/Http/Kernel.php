@@ -66,7 +66,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         // 
-        'otp' => \PragmaRX\Google2FALaravel\Middleware::class,
+        'otp' => \App\Http\Middleware\Otp::class,
 
         //
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,

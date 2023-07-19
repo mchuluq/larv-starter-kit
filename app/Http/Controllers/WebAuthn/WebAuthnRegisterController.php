@@ -32,13 +32,16 @@ class WebAuthnRegisterController
      * @param  \Laragear\WebAuthn\Http\Requests\AttestedRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(AttestedRequest $request): Response{
+    public function register(AttestedRequest $request){
         $request->save(function ($credentials) use ($request) {
             $credentials->alias = $request->input('alias');
             $credentials->user_agent = $request->server('HTTP_USER_AGENT');
         });
         $user = $request->user();
-        Cookie::queue(config('auth.webauthn_remember_cookie'),encrypt($user->id),config('auth.webauthn_remember_expire'));
-        return response()->noContent();
+        $value = encrypt($user->id);
+        Cookie::queue(config('auth.webauthn_remember_cookie'),$value,config('auth.webauthn_remember_expire'));
+        return response()->json([
+            config('auth.webauthn_remember_cookie')=>$value
+        ]);
     }
 }

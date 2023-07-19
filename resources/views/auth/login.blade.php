@@ -91,7 +91,7 @@
                 new WebAuthn().login({
                     name : self.name
                 }, {
-                    remember: document.getElementById('remember').checked ? 'on' : null, 
+                    remember: document.getElementById('remember').checked ? 'on' : null,
                 }).then(response => {
                     self.message = 'Authentication successful!'
                     self.error = false;

@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use Illuminate\Support\Facades\Auth;
-
 use Laragear\WebAuthn\WebAuthn;
 
 /*
@@ -27,11 +25,14 @@ Auth::routes([
 ]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/user',[App\Http\Controllers\Auth\UserController::class,'index'])->name('user.index');
-Route::post('/user/update',[App\Http\Controllers\Auth\UserController::class,'update'])->name('user.update');
-Route::post('/user/password',[App\Http\Controllers\Auth\UserController::class,'password'])->name('user.password');
-Route::match(['post','delete'],'/user/otp',[App\Http\Controllers\Auth\UserController::class,'otp'])->name('user.otp');
-Route::match(['delete','get'],'/user/webauthn/{id?}',[App\Http\Controllers\Auth\UserController::class,'webauthn'])->name('user.webauthn');
+
+Route::get('/user',[App\Http\Controllers\Auth\UserController::class,'index'])->middleware(['auth','otp'])->name('user.index');
+Route::middleware(['auth','verified','otp'])->group(function(){
+    Route::match(['get','post'],'/user/update',[App\Http\Controllers\Auth\UserController::class,'update'])->name('user.update');
+    Route::match(['get','post'],'/user/password',[App\Http\Controllers\Auth\UserController::class,'password'])->name('user.password');
+    Route::match(['get','post','delete'],'/user/otp',[App\Http\Controllers\Auth\UserController::class,'otp'])->name('user.otp');
+    Route::match(['get','delete'],'/user/webauthn/{id?}',[App\Http\Controllers\Auth\UserController::class,'webauthn'])->name('user.webauthn');
+});
 
 Route::post('/2fa', function () {
     return redirect(URL()->previous());

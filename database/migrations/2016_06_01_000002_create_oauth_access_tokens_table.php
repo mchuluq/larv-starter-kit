@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('id', 100)->primary();
             $table->string('user_id',36)->nullable()->index();
             $table->uuid('client_id');
-            $table->string('name')->nullable();
+            $table->text('name')->nullable();
             $table->text('scopes')->nullable();
             $table->boolean('revoked');
             $table->timestamps();

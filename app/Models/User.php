@@ -17,8 +17,6 @@ use ParagonIE\CipherSweet\EncryptedRow;
 use Spatie\LaravelCipherSweet\Concerns\UsesCipherSweet;
 use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-
 class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEmail, WebAuthnAuthenticatable {
     
     use HasApiTokens, HasFactory, Notifiable, UsesCipherSweet, WebAuthnAuthentication;
@@ -42,7 +40,6 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
         'otp_secret' => 'encrypted'
     ];
 
@@ -100,10 +97,6 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
 		}
 		return $url;
 	}
-
-    public function credentials(): MorphMany{
-        return $this->morphMany(WebAuthnCredential::class, 'authenticatable');
-    }
 
     public function findForPassport($username){
         return $this->where('name',$username)->first();

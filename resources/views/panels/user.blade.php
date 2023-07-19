@@ -3,21 +3,18 @@
     <div class="card-header">{{ __('Profile') }}</div>
     <div class="card-body">
         @csrf
-        @if (session('update_status'))
-            <div class="alert alert-success" role="alert">{{ session('update_status') }}</div>
-        @endif
         <div class="mb-3 p-3 text-center">
-            <img src="{{$user->photo_url}}" onerror="this.style.display='none'" width="128" class="img-thumbnail rounded" alt="photo">
+            <img :src="user.photo_url" onerror="this.style.display='none'" width="128" class="img-thumbnail rounded" alt="photo">
         </div>
         <div class="mb-3">
-            <input id="photo_url" type="file" class="form-control @error('photo_url') is-invalid @enderror" name="photo_url" placeholder="Photo" autofocus>
-            @error('photo_url')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+            <input id="photo_url" type="file" class="form-control" name="photo_url" placeholder="Photo" autofocus>
+            <span class="invalid-feedback" data-field="photo_url" role="alert"></span>
         </div>
         <div class="mb-3">
             <div class="form-floating">
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') ?? $user->email }}" required autocomplete="email" placeholder="email" autofocus>
+                <input id="email" type="email" class="form-control" name="email" v-model="user.email" required autocomplete="email" placeholder="email" autofocus>
                 <label for="name">email</label>
-                @error('email')<span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>@enderror
+                <span class="invalid-feedback" data-field="email" role="alert"></span>
             </div>
         </div>
     </div>
@@ -26,13 +23,29 @@
     </div>
 </form>
 </div>
-
 <script type="module">
     const { createApp, ref } = Vue
     createApp({
         data(){
-            return {}
+            return {
+                user : {},
+            }
         },
-        mounted(){}
+        methods : {
+            async getUser(){
+                await api_axios.get('user/update').then( resp => {
+                    this.user = resp.data.user;
+                })
+            }
+        },
+        mounted(){
+            var self = this;
+            this.getUser();
+            window.formSubmit.init("#form-user-update",{
+                callback : function(res){
+                    self.getUser();
+                }
+            })
+        }
     }).mount('#panel-user-update')    
 </script>

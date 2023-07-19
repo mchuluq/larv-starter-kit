@@ -39,15 +39,23 @@ class WebAuthnLoginController
      * @param  \Laragear\WebAuthn\Http\Requests\AssertedRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(AssertedRequest $request): Response
-    {
+    public function login(AssertedRequest $request){
         $login = $request->login();
+        $req_token = $request->boolean('token');
         $cookie = $request->cookie(config('auth.webauthn_remember_cookie'));
+        $data = [];
         if(!$login){
             Cookie::queue(Cookie::forget(config('auth.webauthn_remember_cookie')));
         }else{
             Cookie::queue(config('auth.webauthn_remember_cookie'),$cookie,config('auth.webauthn_remember_expire'));
-        }        
-        return response()->noContent($login ? 204 : 422);
+            if($req_token == 1){
+                $user = $request->user();
+                $token = $user->createToken($request->server('HTTP_USER_AGENT'),['identity','user-setting','route-permission']);
+                
+                $data['token'] = $token->accessToken;
+                $data['user'] = $user;
+            }
+        }
+        return response()->json($data,$login ? 200 : 422);
     }
 }
