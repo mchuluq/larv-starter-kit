@@ -1,0 +1,9 @@
+.form-validated {
+    .invalid-feedback {
+        display: block;
+    }
+}
+
+.alert:empty{
+    display: none;
+}

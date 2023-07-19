@@ -9,15 +9,13 @@ use Illuminate\Support\Str;
 use Illuminate\Notifications\Notifiable;
 use Laragear\WebAuthn\Contracts\WebAuthnAuthenticatable;
 use Laragear\WebAuthn\WebAuthnAuthentication;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 use ParagonIE\CipherSweet\BlindIndex;
 use ParagonIE\CipherSweet\EncryptedRow;
 
 use Spatie\LaravelCipherSweet\Concerns\UsesCipherSweet;
 use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
-
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEmail, WebAuthnAuthenticatable {
     
@@ -42,7 +40,6 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
         'otp_secret' => 'encrypted'
     ];
 
@@ -59,10 +56,6 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
 
     public static function configureCipherSweet(EncryptedRow $encryptedRow): void{
         $encryptedRow->addField('email')->addBlindIndex('email',new BlindIndex('email_index'));
-    }
-
-    public function getAuthIdentifierName(){
-        return 'name';
     }
 
     // automatic hash password string
@@ -105,7 +98,7 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
 		return $url;
 	}
 
-    public function credentials(): MorphMany{
-        return $this->morphMany(WebAuthnCredential::class, 'authenticatable');
+    public function findForPassport($username){
+        return $this->where('name',$username)->first();
     }
 }
