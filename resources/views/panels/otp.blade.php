@@ -73,7 +73,7 @@
         },
         methods : {
             async getOtpStatus(){
-                await api_axios.get('user/otp').then( resp => {
+                await xhttps.get('user/otp').then( resp => {
                     this.otp = resp.data.otp;
                 })
             }

@@ -18,7 +18,7 @@ Route::post('/auth/login',[App\Http\Controllers\Api\AuthController::class,'login
 Route::post('/auth/logout',[App\Http\Controllers\Api\AuthController::class,'logout'])->name('api.logout')->middleware(['auth:api']);
 
 Route::get('/user',[App\Http\Controllers\Auth\UserController::class,'user'])->middleware(['auth:api','scopes:identity','otp'])->name('api.user');
-Route::middleware(['auth:api','scopes:user-setting','api_otp'])->group(function(){
+Route::middleware(['auth:api','scopes:user-setting','otp','encrypt'])->group(function(){
     Route::match(['get','post'],'/user/update',[App\Http\Controllers\Auth\UserController::class,'update'])->name('api.user.update');
     Route::match(['get','post'],'/user/password',[App\Http\Controllers\Auth\UserController::class,'password'])->name('api.user.password');
     Route::match(['get','post','delete'],'/user/otp',[App\Http\Controllers\Auth\UserController::class,'otp'])->name('api.user.otp');

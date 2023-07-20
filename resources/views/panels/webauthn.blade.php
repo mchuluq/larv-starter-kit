@@ -66,13 +66,13 @@
                 })
             },
             async getCredentials(){
-                await api_axios.get('user/webauthn').then( resp => {
+                await xhttps.get('user/webauthn').then( resp => {
                     this.lists = resp.data.credentials;
                 })
             },
             async deleteCredential(row){
                 if(confirm("are you sure you want to delete these credentials ?") == true){
-                    await api_axios.delete(`user/webauthn/${row.id}`).then( resp => {
+                    await xhttps.delete(`user/webauthn/${row.id}`).then( resp => {
                         this.getCredentials()
                         toastr.toast({
                             body : "test",

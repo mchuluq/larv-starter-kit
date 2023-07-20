@@ -74,5 +74,8 @@ class Kernel extends HttpKernel
 
         //
         'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
+        
+        //
+        'encrypt' => \App\Http\Middleware\EncryptRequestResponse::class,
     ];
 }

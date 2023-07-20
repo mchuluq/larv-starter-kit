@@ -170,7 +170,6 @@ class UserController extends Controller{
         $user = $req->user();
         $data['user'] = $user;
         $data['token'] = $req->bearerToken();
-        // $data['token'] = $user->token();
         return response()->json($data);
     }
 
