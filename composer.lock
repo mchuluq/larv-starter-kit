@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f4a273e74aba529db42d96b1dff66521",
+    "content-hash": "ad8d2fe9b88377eb1eb524fe15d87e0f",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4935,6 +4935,70 @@
                 }
             ],
             "time": "2023-04-27T08:09:01+00:00"
+        },
+        {
+            "name": "swisnl/flysystem-encrypted",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swisnl/flysystem-encrypted.git",
+                "reference": "35bec3e744859b2fb01138228a01c23727d71976"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swisnl/flysystem-encrypted/zipball/35bec3e744859b2fb01138228a01c23727d71976",
+                "reference": "35bec3e744859b2fb01138228a01c23727d71976",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/encryption": "^8.0|^9.0|^10.0",
+                "illuminate/support": "^8.0|^9.0|^10.0",
+                "league/flysystem": "^2.0|^3.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.14",
+                "league/flysystem-adapter-test-utilities": "^2.0|^3.0",
+                "league/flysystem-memory": "^2.0|^3.0",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Swis\\Flysystem\\Encrypted\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jasper Zonneveld",
+                    "email": "jasper@swis.nl",
+                    "homepage": "https://github.com/JaZo",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Flysystem Adapter Encryption Decorator",
+            "homepage": "https://github.com/swisnl/flysystem-encrypted",
+            "keywords": [
+                "Flysystem",
+                "adapter",
+                "decorator",
+                "encrypted",
+                "swisnl"
+            ],
+            "support": {
+                "issues": "https://github.com/swisnl/flysystem-encrypted/issues",
+                "source": "https://github.com/swisnl/flysystem-encrypted/tree/2.1.0"
+            },
+            "time": "2023-02-16T20:04:29+00:00"
         },
         {
             "name": "symfony/console",
