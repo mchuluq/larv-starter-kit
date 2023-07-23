@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', 'encrypted'),
 
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,14 @@ return [
     */
 
     'disks' => [
-
+        'encrypted' => [
+            'driver' => 'encrypted',
+            'root' => storage_path('app/encrypted'),
+            'key' => env('STORAGE_KEY'),
+            'cipher' => 'aes-256-cbc',
+            'throw' => false,
+        ],
+        
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

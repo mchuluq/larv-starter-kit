@@ -57,7 +57,7 @@
         },
         methods : {
             async getUser(){
-                await api_axios.get('user/password').then( resp => {
+                await xhttps.get('user/password').then( resp => {
                     this.user = resp.data.user;
                 })
             }
@@ -70,6 +70,7 @@
             window.passwordToggle.init('input-password-group');
             window.passwordToggle.init('input-password-confirm-group');
             window.formSubmit.init("#form-password-update",{
+                secure : true,
                 callback : function(res){
                     self.getUser();
                 },

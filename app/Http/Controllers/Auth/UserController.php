@@ -168,10 +168,9 @@ class UserController extends Controller{
 
     public function user(Request $req){
         $user = $req->user();
-        $data['user'] = $user;
-        $data['token'] = $req->bearerToken();
-        // $data['token'] = $user->token();
-        return response()->json($data);
+        $user->username = $user->name;
+        $user->token = $req->bearerToken();
+        return response()->json($user);
     }
 
 }

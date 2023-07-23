@@ -33,15 +33,16 @@
         },
         methods : {
             async getUser(){
-                await api_axios.get('user/update').then( resp => {
+                await xhttps.get('user/update').then( resp => {
                     this.user = resp.data.user;
                 })
-            }
+            },
         },
         mounted(){
             var self = this;
             this.getUser();
             window.formSubmit.init("#form-user-update",{
+                secure : false,
                 callback : function(res){
                     self.getUser();
                 }
