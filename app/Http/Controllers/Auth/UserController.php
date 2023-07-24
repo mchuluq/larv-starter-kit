@@ -168,9 +168,31 @@ class UserController extends Controller{
 
     public function user(Request $req){
         $user = $req->user();
-        $user->username = $user->name;
         $user->token = $req->bearerToken();
+        $user->accounts = ($user->account_id) ? $user->accounts(true)->pluck('accountable_id','id') : null;
+        
+        if($user->tokenCan('route-permission')){
+            $user->route_permissions = ($user->account_id) ? $user->getRoutePermissions() : null;
+            $user->data_permissions = ($user->account_id) ? $user->getDataPermissions() : null;
+        }
+
         return response()->json($user);
+    }
+
+    public function accounts(Request $req,$id=null){
+        $user = $req->user();
+        if($id){
+            $acc = $user->setAccount($id);
+            if($acc){
+                return redirect('home')->with('message',__('auth.account_selected'));
+            }else{
+                return back()->with('message','auth.account_not_found');
+            }
+        }else{
+            $data['accounts'] = $user->accounts(true)->get();
+            $data['account_id'] = $user->account_id;
+            return view('auth.accounts',$data);
+        }
     }
 
 }

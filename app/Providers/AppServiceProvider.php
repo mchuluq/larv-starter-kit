@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Filesystem\FilesystemAdapter;
 use League\Flysystem\Filesystem;
+
 use Swis\Flysystem\Encrypted\EncryptedFileSystemAdapter;
+
+use Illuminate\Support\Collection;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         Passport::ignoreRoutes();
+
+        $this->registerMacros();
     }
 
     /**
@@ -35,6 +40,15 @@ class AppServiceProvider extends ServiceProvider
             $adapter = new EncryptedFileSystemAdapter($local,$encrypter);
             
             return new FilesystemAdapter(new Filesystem($adapter, $config),$adapter,$config);
+        });
+    }
+
+    
+    protected function registerMacros(){
+        Collection::make(glob(__DIR__ . '/../Macros/*.php'))->mapWithKeys(function ($path) {
+            return [$path => pathinfo($path, PATHINFO_FILENAME)];
+        })->each(function ($macro, $path) {
+            require_once $path;
         });
     }
 }

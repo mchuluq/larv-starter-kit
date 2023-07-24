@@ -98,4 +98,19 @@ class AuthController extends \App\Http\Controllers\Controller{
         };
         
     }
+
+    public function accounts(Request $req,$id=null){
+        $user = $req->user();
+        if($id){
+            $acc = $user->setAccount($id);
+            if($acc){
+                return response()->json(['message'=>__('auth.account_selected')]);
+            }else{
+                return response()->json(['message'=>__('auth.account_not_found')],404);
+            }
+        }else{
+            $data['accounts'] = $user->accountOptions();
+            return response()->json($data);
+        }
+    }
 }
