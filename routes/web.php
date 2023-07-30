@@ -24,6 +24,10 @@ Auth::routes([
     'register' => true,
 ]);
 
+Route::get('/auth/{provider}', [App\Http\Controllers\Auth\SocialiteController::class, 'redirectToProvider'])->name('auth.socialite');
+Route::get('/auth/{provider}/callback', [App\Http\Controllers\Auth\SocialiteController::class, 'handleProvideCallback'])->name('auth.socialite.callback');
+Route::match(['get','post'],'/auth/google_one_tap', [App\Http\Controllers\Auth\SocialiteController::class, 'googleOneTapLogin'])->name('auth.google-one-tap');
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/user',[App\Http\Controllers\Auth\UserController::class,'index'])->middleware(['auth','otp'])->name('user.index');

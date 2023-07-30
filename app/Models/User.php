@@ -29,18 +29,21 @@ class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEm
         'email',
         'password',
         'photo_url',
-        'otp_secret'
+        'otp_secret',
+        'user_config'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'otp_secret'
+        'otp_secret',
+        'user_config'
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'otp_secret' => 'encrypted'
+        'otp_secret' => 'encrypted',
+        'user_config' => 'encrypted:array'
     ];
 
     protected $appends = ['otp_status'];
