@@ -41,6 +41,6 @@ Route::post('/2fa', function () {
     return redirect(URL()->previous());
 })->name('2fa')->middleware('otp');
 
-Route::get('file/{filepath}',[App\Http\Controllers\FileController::class,'file'])->where('filepath', '.*')->name('file.index');
+Route::get('file/{disk}/{filepath}',[App\Http\Controllers\FileController::class,'file'])->where('filepath', '.*')->name('file.index');
 
 WebAuthn::routes();
