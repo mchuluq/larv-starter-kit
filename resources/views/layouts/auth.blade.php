@@ -22,6 +22,8 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <script src="{{ Vite::asset('resources/js/vendor/webauthn/webauthn.js') }}"></script>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div class="c-auth-layout d-flex align-items-center">

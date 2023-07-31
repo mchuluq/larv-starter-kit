@@ -35,6 +35,18 @@ return [
             'key' => env('STORAGE_KEY'),
             'cipher' => 'aes-256-cbc',
             'throw' => false,
+            'url' => env('APP_URL')."/file/encrypted/",
+        ],
+        
+        'google' => [
+            'driver' => 'sgoogle',
+            'clientId' => env('GOOGLE_CLIENT_ID'),
+            'clientSecret' => env('GOOGLE_CLIENT_SECRET'),
+            'refreshToken' => env('GOOGLE_REFRESH_TOKEN'),
+            'folderId' => env('GOOGLE_FOLDER_ID'),
+
+            'key' => env('STORAGE_KEY'),
+            'cipher' => 'aes-256-cbc',
         ],
         
         'local' => [

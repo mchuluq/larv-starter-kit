@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\Crypter;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use App\Rules\Otp;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
 
@@ -43,8 +45,7 @@ class UserController extends Controller{
                     $user->photo_url = $filename;
                 }
                 $user->save();
-    
-                return response()->json(['message'=>__('auth.user_updated')]);
+                return response()->json(['message'=>__('auth.user_updated'),'path'=>$user->photo_url]);
             }else{
                 return response()->json(['user'=>$user]);
             }
