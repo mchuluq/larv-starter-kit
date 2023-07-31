@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasAccount;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,28 +20,32 @@ use Spatie\LaravelCipherSweet\Contracts\CipherSweetEncrypted;
 
 class User extends Authenticatable implements CipherSweetEncrypted, MustVerifyEmail, WebAuthnAuthenticatable {
     
-    use HasApiTokens, HasFactory, Notifiable, UsesCipherSweet, WebAuthnAuthentication;
+    use HasApiTokens, HasFactory, Notifiable, UsesCipherSweet, WebAuthnAuthentication, HasAccount;
 
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
         'name',
+        'account_id',
         'email',
         'password',
         'photo_url',
-        'otp_secret'
+        'otp_secret',
+        'user_config'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
-        'otp_secret'
+        'otp_secret',
+        'user_config'
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'otp_secret' => 'encrypted'
+        'otp_secret' => 'encrypted',
+        'user_config' => 'encrypted:array'
     ];
 
     protected $appends = ['otp_status'];

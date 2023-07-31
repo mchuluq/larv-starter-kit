@@ -53,13 +53,19 @@
                         <button type="submit" class="btn btn-primary">{{ __('Login') }}</button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-secondary" @click="webauthnLogin">{{ __('Webauthn') }}</button>
+                <div class="d-flex align-items-center justify-content-between mb-3" v-if="login_option == false">
+                    <div>
+                        <button @click="login_option = true" type="button" class="btn btn-link">{{ __('try different way') }}</button>
                     </div>
+                </div>
+                <div class="list-group" v-if="login_option == true">
+                    <button v-if="webauthn" type="button" class="list-group-item list-group-item-action" @click="webauthnLogin"><i class="fa-solid fa-fingerprint fa-fw"></i> {{ __('Webauthn') }}</button>
+                    <a type="button" class="list-group-item list-group-item-action" href="{{route('auth.socialite.redirect',['provider'=>'google'])}}"><i class="fa-brands fa-google fa-fw"></i> {{ __('Login with google') }}</a>
                 </div>
             </form>
         </div>
+    </div>
+    <div id="g_id_onload" cancel_on_tap_outside="false" data-_token="{{csrf_token()}}" data-client_id="{{env('GOOGLE_CLIENT_ID')}}" data-login_uri="{{route('auth.quick.login',['provider'=>'google'])}}">
     </div>
 </div>
 <script type="module">
@@ -75,7 +81,9 @@
                 webauthn : {{$webauthn}},
                 
                 message : null,
-                error : false
+                error : false,
+
+                login_option : false
             }
         },
         mounted(){

@@ -10,8 +10,12 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Log;
 use League\Flysystem\Filesystem;
+
 use Swis\Flysystem\Encrypted\EncryptedFileSystemAdapter;
+
+use Illuminate\Support\Collection;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         Passport::ignoreRoutes();
+
+        $this->registerMacros();
     }
 
     /**
@@ -29,12 +35,49 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Storage::extend('encrypted',function(Application $app, array $config){
-            $local = new \League\Flysystem\Local\LocalFilesystemAdapter($config['root']);
-            $encrypter = new Encrypter($config['key'],strtolower($config['cipher']));
-            $adapter = new EncryptedFileSystemAdapter($local,$encrypter);
+        try {
+            // local encrypted storage
+            Storage::extend('encrypted',function(Application $app, array $config){
+                $local = new \League\Flysystem\Local\LocalFilesystemAdapter($config['root']);
+                $encrypter = new Encrypter($config['key'],strtolower($config['cipher']));
+                $adapter = new EncryptedFileSystemAdapter($local,$encrypter);
+                
+                return new FilesystemAdapter(new Filesystem($adapter, $config),$adapter,$config);
+            });
             
-            return new FilesystemAdapter(new Filesystem($adapter, $config),$adapter,$config);
+            // encrypted google drive storage
+            Storage::extend('google',function(Application $app, array $config){
+                $options = [];
+                if (!empty($config['teamDriveId'] ?? null)) {
+                    $options['teamDriveId'] = $config['teamDriveId'];
+                }
+
+                $client = new \Google\Client();
+                $client->setClientId($config['clientId']);
+                $client->setClientSecret($config['clientSecret']);
+                $client->refreshToken($config['refreshToken']);
+                
+                $service = new \Google\Service\Drive($client);
+                $adapter = new \Masbug\Flysystem\GoogleDriveAdapter($service, $config['folderId'] ?? '/', $options);
+                
+                $encrypter = new Encrypter($config['key'],strtolower($config['cipher']));
+                $proxy_adapter = new EncryptedFileSystemAdapter($adapter,$encrypter);
+
+                $driver = new \League\Flysystem\Filesystem($proxy_adapter);
+
+                return new \Illuminate\Filesystem\FilesystemAdapter($driver, $proxy_adapter);
+            });
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+        }
+    }
+
+    
+    protected function registerMacros(){
+        Collection::make(glob(__DIR__ . '/../Macros/*.php'))->mapWithKeys(function ($path) {
+            return [$path => pathinfo($path, PATHINFO_FILENAME)];
+        })->each(function ($macro, $path) {
+            require_once $path;
         });
     }
 }

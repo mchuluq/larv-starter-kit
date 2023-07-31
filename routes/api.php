@@ -18,6 +18,7 @@ Route::post('/auth/login',[App\Http\Controllers\Api\AuthController::class,'login
 Route::post('/auth/logout',[App\Http\Controllers\Api\AuthController::class,'logout'])->name('api.logout')->middleware(['auth:api']);
 
 Route::get('/user',[App\Http\Controllers\Auth\UserController::class,'user'])->middleware(['auth:api','scopes:identity'])->name('api.user');
+Route::get('/accounts/{id?}',[App\Http\Controllers\Api\AuthController::class,'accounts'])->middleware(['auth:api','scopes:identity','otp'])->name('api.user.accounts');
 
 Route::middleware(['auth:api','scopes:user-setting','otp','encrypt'])->group(function(){
     Route::match(['get','post'],'/user/update',[App\Http\Controllers\Auth\UserController::class,'update'])->name('api.user.update');
