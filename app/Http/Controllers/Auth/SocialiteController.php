@@ -11,14 +11,14 @@ class SocialiteController extends Controller{
 
     protected $available = ['google'];
     
-    public function redirectToProvider($provider){
+    public function redirect($provider){
         if(!in_array($provider,$this->available)){
             abort(404);
         }
         return Socialite::driver($provider)->redirect();
     }
 
-    public function handleProvideCallback($provider){
+    public function callback($provider){
         try {
             if(!in_array($provider,$this->available)){
                 throw new \Exception("not found");
@@ -42,26 +42,28 @@ class SocialiteController extends Controller{
         }
     }
 
-    public function googleOneTapLogin(Request $req){
-        if ($_COOKIE['g_csrf_token'] !== $req->input('g_csrf_token')) {
-            return back();
+    public function quickLogin(Request $req,$provider){
+        if($provider == 'google'){
+            if ($_COOKIE['g_csrf_token'] !== $req->input('g_csrf_token')) {
+                return back();
+            }
+            $idToken = $req->input('credential'); 
+            $client = new Google_Client([
+                'client_id' => env('GOOGLE_CLIENT_ID')
+            ]);
+            $payload = $client->verifyIdToken($idToken);
+            if (!$payload) {
+                return back();
+            }            
+            $user = \App\Models\User::whereBlind('email','email_index',$payload['email'])->first();
+            if($user){
+                Auth()->login($user,true);
+                return redirect()->route('home');
+            }else{
+                abort(404);
+            }
         }
-        $idToken = $req->input('credential'); 
-        $client = new Google_Client([
-            'client_id' => env('GOOGLE_DRIVE_CLIENT_ID')
-        ]);
-        $payload = $client->verifyIdToken($idToken);
-        if (!$payload) {
-            return back();
-        }
-        
-        $user = \App\Models\User::whereBlind('email','email_index',$payload['email'])->first();
-        if($user){
-            Auth()->login($user,true);
-            return redirect()->route('home');
-        }else{
-            abort(404);
-        }
+        abort(404);
     }
 
 }

@@ -60,12 +60,12 @@
                 </div>
                 <div class="list-group" v-if="login_option == true">
                     <button v-if="webauthn" type="button" class="list-group-item list-group-item-action" @click="webauthnLogin"><i class="fa-solid fa-fingerprint fa-fw"></i> {{ __('Webauthn') }}</button>
-                    <a type="button" class="list-group-item list-group-item-action" href="{{route('auth.socialite',['provider'=>'google'])}}"><i class="fa-brands fa-google fa-fw"></i> {{ __('Login with google') }}</a>
+                    <a type="button" class="list-group-item list-group-item-action" href="{{route('auth.socialite.redirect',['provider'=>'google'])}}"><i class="fa-brands fa-google fa-fw"></i> {{ __('Login with google') }}</a>
                 </div>
             </form>
         </div>
     </div>
-    <div id="g_id_onload" data-client_id="{{env('GOOGLE_DRIVE_CLIENT_ID')}}" data-login_uri="{{route('auth.google-one-tap')}}">
+    <div id="g_id_onload" cancel_on_tap_outside="false" data-_token="{{csrf_token()}}" data-client_id="{{env('GOOGLE_CLIENT_ID')}}" data-login_uri="{{route('auth.quick.login',['provider'=>'google'])}}">
     </div>
 </div>
 <script type="module">

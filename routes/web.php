@@ -24,9 +24,9 @@ Auth::routes([
     'register' => true,
 ]);
 
-Route::get('/auth/{provider}', [App\Http\Controllers\Auth\SocialiteController::class, 'redirectToProvider'])->name('auth.socialite');
-Route::get('/auth/{provider}/callback', [App\Http\Controllers\Auth\SocialiteController::class, 'handleProvideCallback'])->name('auth.socialite.callback');
-Route::match(['get','post'],'/auth/google_one_tap', [App\Http\Controllers\Auth\SocialiteController::class, 'googleOneTapLogin'])->name('auth.google-one-tap');
+Route::get('/auth/redirect/{provider}', [App\Http\Controllers\Auth\SocialiteController::class, 'redirect'])->name('auth.socialite.redirect');
+Route::get('/auth/callback/{provider}', [App\Http\Controllers\Auth\SocialiteController::class, 'callback'])->name('auth.socialite.callback');
+Route::post('/auth/quick/{provider}', [App\Http\Controllers\Auth\SocialiteController::class, 'quickLogin'])->name('auth.quick.login');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
